@@ -14,9 +14,8 @@ public class Ui {
         showMessage("Bye. Hope to see you again soon!");
     }
 
-    public static void add(TaskList taskList, String task) {
-        taskList.addTask(task);
-        showMessage("Added: " + task);
+    public static void add(Task task, int size) {
+        showMessage(String.format("Got it. I've added this task:\n  %s\nNow you have %d tasks in the list.", task, size));
     }
 
     public static void list(TaskList taskList) {
