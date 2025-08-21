@@ -1,24 +1,24 @@
-public class TaskList {
-    private String[] tasks = new String[100];
-    private int taskCount = 0;
+import java.util.ArrayList;
 
-    public void addTask(String task) {
-        tasks[taskCount++] = task;
+public class TaskList {
+    private ArrayList<Task> tasks = new ArrayList<>();
+
+    public void addTask(String description) {
+        tasks.add(new Task(description));
+    }
+
+    public Task getTask(int id) {
+        return tasks.get(id);
     }
 
     @Override
     public String toString() {
-        if (taskCount == 0) {
-            return "No tasks";
-        }
+        if (tasks.isEmpty()) return "No tasks";
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < taskCount; i++) {
-            sb.append(i + 1).append(". ").append(tasks[i]);
-            if (i < taskCount - 1) {
-                sb.append("\n");
-            }
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append(i + 1).append(". ").append(tasks.get(i)).append("\n");
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 }

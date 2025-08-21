@@ -20,6 +20,6 @@ public class Ui {
     }
 
     public static void list(TaskList taskList) {
-        showMessage(taskList.toString());
+        showMessage("Here are the tasks in your list:\n" + taskList.toString());
     }
 }
