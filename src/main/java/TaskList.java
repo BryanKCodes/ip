@@ -14,7 +14,10 @@ public class TaskList {
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < taskCount; i++) {
-            sb.append(i + 1).append(". ").append(tasks[i]).append("\n");
+            sb.append(i + 1).append(". ").append(tasks[i]);
+            if (i < taskCount - 1) {
+                sb.append("\n");
+            }
         }
         return sb.toString();
     }

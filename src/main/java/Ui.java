@@ -13,4 +13,13 @@ public class Ui {
     public static void exit() {
         showMessage("Bye. Hope to see you again soon!");
     }
+
+    public static void add(TaskList taskList, String task) {
+        taskList.addTask(task);
+        showMessage("Added: " + task);
+    }
+
+    public static void list(TaskList taskList) {
+        showMessage(taskList.toString());
+    }
 }
