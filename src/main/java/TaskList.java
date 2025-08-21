@@ -12,6 +12,9 @@ public class TaskList {
     }
 
     public Task getTask(int id) {
+        if (id < 0 || id >= tasks.size()) {
+            return null;
+        }
         return tasks.get(id);
     }
 
