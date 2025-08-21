@@ -21,4 +21,8 @@ public class Ui {
     public static void list(TaskList taskList) {
         showMessage("Here are the tasks in your list:\n" + taskList.toString());
     }
+
+    public static void delete(Task task, int size) {
+        showMessage(String.format("Noted. I've removed this task:\n  %s\nNow you have %d tasks in the list.", task, size));
+    }
 }

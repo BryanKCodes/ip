@@ -104,6 +104,24 @@ public class Parser {
             return;
         }
 
+        // DELETE
+        if (input.toLowerCase().startsWith("delete")) {
+            matcher = Pattern.compile("^delete\\s+(\\d+)$", Pattern.CASE_INSENSITIVE).matcher(input);
+            if (matcher.matches()) {
+                int id = Integer.parseInt(matcher.group(1)) - 1;
+                Task task = taskList.getTask(id);
+                if (task == null) {
+                    Ui.showMessage("Unable to find task " + (id + 1));
+                } else {
+                    taskList.removeTask(id);
+                    Ui.delete(task, taskList.size());
+                }
+            } else {
+                Ui.showMessage("Were you trying to delete a task? The correct format is: delete <task number>");
+            }
+            return;
+        }
+
         // fallback
         Ui.showMessage("Sorry, I do not understand your message. Please try again.");
     }

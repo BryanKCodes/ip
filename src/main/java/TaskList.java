@@ -7,6 +7,10 @@ public class TaskList {
         tasks.add(task);
     }
 
+    public void removeTask(int id) {
+        tasks.remove(id);
+    }
+
     public Task getTask(int id) {
         return tasks.get(id);
     }
