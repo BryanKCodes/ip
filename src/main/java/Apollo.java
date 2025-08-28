@@ -3,8 +3,7 @@ import java.util.Scanner;
 public class Apollo {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        TaskList taskList = new TaskList();
-        Parser parser = new Parser(taskList);
+        Parser parser = new Parser();
 
         Ui.greet();
 
