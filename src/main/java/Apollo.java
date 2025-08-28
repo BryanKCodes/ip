@@ -10,7 +10,11 @@ public class Apollo {
         boolean running = true;
         while (running) {
             String input = scanner.nextLine();
-            running = parser.handle(input);
+            try {
+                running = parser.handle(input);
+            } catch (ApolloException e) {
+                Ui.showMessage(e.getMessage());
+            }
         }
 
         scanner.close();
