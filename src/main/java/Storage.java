@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Storage {
     private static final String FILE_PATH = "./data/apollo.txt";
 
-    public TaskList load() throws IOException {
+    public static TaskList load() throws IOException {
         TaskList tasks = new TaskList();
         File file = new File(FILE_PATH);
 
@@ -28,7 +28,7 @@ public class Storage {
         return tasks;
     }
 
-    public void save(TaskList tasks) throws IOException {
+    public static void save(TaskList tasks) throws IOException {
         File file = new File(FILE_PATH);
         file.getParentFile().mkdirs();
 

@@ -1,11 +1,16 @@
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
     private TaskList taskList;
 
-    public Parser(TaskList taskList) {
-        this.taskList = taskList;
+    public Parser() {
+        try {
+            taskList = Storage.load();
+        } catch (Exception e) {
+            taskList = new TaskList();
+        }
     }
 
     /**
@@ -41,6 +46,7 @@ public class Parser {
                 } else {
                     task.markAsDone();
                     Ui.showMessage("Nice! I've marked this task as done:\n  " + task);
+                    safeSave();
                 }
             } else {
                 Ui.showMessage("Were you trying to mark tasks? The correct format is: mark <task number>");
@@ -59,6 +65,7 @@ public class Parser {
                 } else {
                     task.markAsUndone();
                     Ui.showMessage("OK, I've marked this task as not done yet:\n  " + task);
+                    safeSave();
                 }
             } else {
                 Ui.showMessage("Were you trying to unmark tasks? The correct format is: unmark <task number>");
@@ -73,6 +80,7 @@ public class Parser {
                 Task task = new ToDo(matcher.group(1));
                 taskList.addTask(task);
                 Ui.add(task, taskList.size());
+                safeSave();
             } else {
                 Ui.showMessage("The description of a todo cannot be empty. Format: todo <description>");
             }
@@ -86,6 +94,7 @@ public class Parser {
                 Task task = new Deadline(matcher.group(1), matcher.group(2));
                 taskList.addTask(task);
                 Ui.add(task, taskList.size());
+                safeSave();
             } else {
                 Ui.showMessage("The correct format for a deadline is: deadline <description> /by <time>");
             }
@@ -99,6 +108,7 @@ public class Parser {
                 Task task = new Event(matcher.group(1), matcher.group(2), matcher.group(3));
                 taskList.addTask(task);
                 Ui.add(task, taskList.size());
+                safeSave();
             } else {
                 Ui.showMessage("The correct format for an event is: event <description> /from <start> /to <end>");
             }
@@ -116,6 +126,7 @@ public class Parser {
                 } else {
                     taskList.removeTask(id);
                     Ui.delete(task, taskList.size());
+                    safeSave();
                 }
             } else {
                 Ui.showMessage("Were you trying to delete a task? The correct format is: delete <task number>");
@@ -125,5 +136,13 @@ public class Parser {
 
         // fallback
         Ui.showMessage("Sorry, I do not understand your message. Please try again.");
+    }
+
+    private void safeSave() {
+        try {
+            Storage.save(taskList);
+        } catch (IOException e) {
+            Ui.showMessage("Unable to save your tasks. Changes may be lost.");
+        }
     }
 }
