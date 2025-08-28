@@ -19,7 +19,7 @@ public class Parser {
      * @param input The user input string.
      * @return true if program should continue, false if it should exit.
      */
-    public boolean handle(String input) {
+    public boolean handle(String input) throws ApolloException {
         String command = input.toLowerCase();
         if (command.equals("bye")) {
             Ui.exit();
@@ -33,7 +33,7 @@ public class Parser {
         return true;
     }
 
-    private void handleRegex(String input) {
+    private void handleRegex(String input) throws ApolloException {
         Matcher matcher;
 
         // MARK
@@ -43,14 +43,14 @@ public class Parser {
                 int id = Integer.parseInt(matcher.group(1)) - 1;
                 Task task = taskList.getTask(id);
                 if (task == null) {
-                    Ui.showMessage("Unable to find task " + (id + 1));
+                    throw new ApolloException.TaskNotFoundException(id);
                 } else {
                     task.markAsDone();
                     Ui.showMessage("Nice! I've marked this task as done:\n  " + task);
                     safeSave();
                 }
             } else {
-                Ui.showMessage("Were you trying to mark tasks? The correct format is: mark <task number>");
+                throw new ApolloException.InvalidFormatException("mark", "mark <task number>");
             }
             return;
         }
@@ -62,14 +62,14 @@ public class Parser {
                 int id = Integer.parseInt(matcher.group(1)) - 1;
                 Task task = taskList.getTask(id);
                 if (task == null) {
-                    Ui.showMessage("Unable to find task " + (id + 1));
+                    throw new ApolloException.TaskNotFoundException(id);
                 } else {
                     task.markAsUndone();
                     Ui.showMessage("OK, I've marked this task as not done yet:\n  " + task);
                     safeSave();
                 }
             } else {
-                Ui.showMessage("Were you trying to unmark tasks? The correct format is: unmark <task number>");
+                throw new ApolloException.InvalidFormatException("unmark", "unmark <task number>");
             }
             return;
         }
@@ -83,7 +83,7 @@ public class Parser {
                 Ui.add(task, taskList.size());
                 safeSave();
             } else {
-                Ui.showMessage("The description of a todo cannot be empty. Format: todo <description>");
+                throw new ApolloException.EmptyDescriptionException("todo", "todo <description>");
             }
             return;
         }
@@ -98,10 +98,10 @@ public class Parser {
                     Ui.add(task, taskList.size());
                     safeSave();
                 } catch (DateTimeParseException e) {
-                    Ui.showMessage("Invalid date format. Use yyyy-MM-dd.");
+                    throw new ApolloException.InvalidDateFormatException();
                 }
             } else {
-                Ui.showMessage("The correct format for a deadline is: deadline <description> /by <time>");
+                throw new ApolloException.InvalidFormatException("deadline", "deadline <description> /by <time>");
             }
             return;
         }
@@ -116,10 +116,10 @@ public class Parser {
                     Ui.add(task, taskList.size());
                     safeSave();
                 } catch (DateTimeParseException e) {
-                    Ui.showMessage("Invalid date format. Use yyyy-MM-dd.");
+                    throw new ApolloException.InvalidDateFormatException();
                 }
             } else {
-                Ui.showMessage("The correct format for an event is: event <description> /from <start> /to <end>");
+                throw new ApolloException.InvalidFormatException("event", "event <description> /from <start> /to <end>");
             }
             return;
         }
@@ -133,18 +133,22 @@ public class Parser {
                 if (task == null) {
                     Ui.showMessage("Unable to find task " + (id + 1));
                 } else {
-                    taskList.removeTask(id);
-                    Ui.delete(task, taskList.size());
-                    safeSave();
+                    try {
+                        taskList.removeTask(id);
+                        Ui.delete(task, taskList.size());
+                        safeSave();
+                    } catch (DateTimeParseException e) {
+                        throw new ApolloException.InvalidDateFormatException();
+                    }
                 }
             } else {
-                Ui.showMessage("Were you trying to delete a task? The correct format is: delete <task number>");
+                throw new ApolloException.InvalidFormatException("delete", "delete <task number>");
             }
             return;
         }
 
         // fallback
-        Ui.showMessage("Sorry, I do not understand your message. Please try again.");
+        throw new ApolloException.UnknownCommandException();
     }
 
     private void safeSave() {
