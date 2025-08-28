@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.time.format.DateTimeParseException;
 
 public class Parser {
     private TaskList taskList;
@@ -91,10 +92,14 @@ public class Parser {
         if (input.toLowerCase().startsWith("deadline")) {
             matcher = Pattern.compile("^deadline\\s+(.+)\\s+/by\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(input);
             if (matcher.matches()) {
-                Task task = new Deadline(matcher.group(1), matcher.group(2));
-                taskList.addTask(task);
-                Ui.add(task, taskList.size());
-                safeSave();
+                try {
+                    Task task = new Deadline(matcher.group(1), matcher.group(2));
+                    taskList.addTask(task);
+                    Ui.add(task, taskList.size());
+                    safeSave();
+                } catch (DateTimeParseException e) {
+                    Ui.showMessage("Invalid date format. Use yyyy-MM-dd.");
+                }
             } else {
                 Ui.showMessage("The correct format for a deadline is: deadline <description> /by <time>");
             }
@@ -105,10 +110,14 @@ public class Parser {
         if (input.toLowerCase().startsWith("event")) {
             matcher = Pattern.compile("^event\\s+(.+)\\s+/from\\s+(.+)\\s+/to\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(input);
             if (matcher.matches()) {
-                Task task = new Event(matcher.group(1), matcher.group(2), matcher.group(3));
-                taskList.addTask(task);
-                Ui.add(task, taskList.size());
-                safeSave();
+                try {
+                    Task task = new Event(matcher.group(1), matcher.group(2), matcher.group(3));
+                    taskList.addTask(task);
+                    Ui.add(task, taskList.size());
+                    safeSave();
+                } catch (DateTimeParseException e) {
+                    Ui.showMessage("Invalid date format. Use yyyy-MM-dd.");
+                }
             } else {
                 Ui.showMessage("The correct format for an event is: event <description> /from <start> /to <end>");
             }
