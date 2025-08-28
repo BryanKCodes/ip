@@ -18,6 +18,10 @@ public class TaskList {
         return tasks.get(id);
     }
 
+    public ArrayList<Task> getTasks() {
+        return tasks;
+    }
+
     public int size() {
         return tasks.size();
     }
