@@ -1,3 +1,9 @@
+package apollo;
+
+import apollo.exception.ApolloException;
+import apollo.parser.Parser;
+import apollo.ui.Ui;
+
 import java.util.Scanner;
 
 public class Apollo {

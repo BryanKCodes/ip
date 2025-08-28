@@ -1,3 +1,8 @@
+package apollo.ui;
+
+import apollo.tasks.Task;
+import apollo.tasks.TaskList;
+
 public class Ui {
     public static void showMessage(String message) {
         String border = "____________________________________________________________";
@@ -7,7 +12,7 @@ public class Ui {
     }
 
     public static void greet() {
-        showMessage("Hello! I'm Apollo\nWhat can I do for you?");
+        showMessage("Hello! I'm apollo.Apollo\nWhat can I do for you?");
     }
 
     public static void exit() {
