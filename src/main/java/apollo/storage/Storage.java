@@ -9,9 +9,20 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Handles loading and saving of TaskList to persistent storage.
+ * Reads and writes tasks from/to a text file in a predefined format.
+ */
 public class Storage {
     private static final String FILE_PATH = "./data/apollo.txt";
 
+    /**
+     * Loads the TaskList from storage.
+     * If the file does not exist, creates a new file and returns an empty TaskList.
+     *
+     * @return The TaskList loaded from storage.
+     * @throws IOException If an I/O error occurs during reading or file creation.
+     */
     public static TaskList load() throws IOException {
         TaskList tasks = new TaskList();
         File file = new File(FILE_PATH);
@@ -32,6 +43,13 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves the given TaskList to storage.
+     * Creates parent directories if they do not exist.
+     *
+     * @param tasks TaskList to be saved.
+     * @throws IOException If an I/O error occurs during writing.
+     */
     public static void save(TaskList tasks) throws IOException {
         File file = new File(FILE_PATH);
         file.getParentFile().mkdirs();
@@ -45,6 +63,14 @@ public class Storage {
         }
     }
 
+    /**
+     * Decodes a line from the save file into a Task object.
+     * Supports ToDo, Deadline, and Event task types.
+     *
+     * @param line Line read from the save file.
+     * @return Task object corresponding to the line.
+     * @throws IllegalStateException If the task type in the line is unrecognized.
+     */
     private static Task decodeTaskFromLine(String line) {
         String[] parts = line.split(" \\| ");
         String type = parts[0];
