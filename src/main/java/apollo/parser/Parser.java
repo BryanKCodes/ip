@@ -154,6 +154,19 @@ public class Parser {
             return;
         }
 
+        // FIND
+        if (input.toLowerCase().startsWith("find")) {
+            matcher = Pattern.compile("^find\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(input);
+            if (matcher.matches()) {
+                String keyword = matcher.group(1);
+                TaskList filteredTaskList = new TaskList(taskList.findTasks(keyword));
+                Ui.showMessage("Here are the matching tasks in your list:\n" + filteredTaskList.toString());
+            } else {
+                throw new ApolloException.InvalidFormatException("find", "find <keyword>");
+            }
+            return;
+        }
+
         // fallback
         throw new ApolloException.UnknownCommandException();
     }
