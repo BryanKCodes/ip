@@ -13,11 +13,11 @@ public class Apollo {
 
         Ui.greet();
 
-        boolean running = true;
-        while (running) {
+        boolean isRunning = true;
+        while (isRunning) {
             String input = scanner.nextLine();
             try {
-                running = parser.handle(input);
+                isRunning = parser.handle(input);
             } catch (ApolloException e) {
                 Ui.showMessage(e.getMessage());
             }

@@ -6,6 +6,7 @@ import apollo.tasks.TaskList;
 public class Ui {
     public static void showMessage(String message) {
         String border = "____________________________________________________________";
+
         System.out.println(border);
         System.out.println(message);
         System.out.println(border);
