@@ -1,13 +1,14 @@
 package apollo.tasks;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a list of tasks.
  * Provides methods to add, remove, retrieve, and display tasks.
  */
 public class TaskList {
-    private ArrayList<Task> tasks = new ArrayList<>(); // a list of tasks
+    private List<Task> tasks = new ArrayList<>();
 
     /**
      * Adds a task to the task list.
@@ -45,7 +46,7 @@ public class TaskList {
      *
      * @return ArrayList containing all tasks.
      */
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
     }
 

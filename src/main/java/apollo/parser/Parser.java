@@ -38,6 +38,7 @@ public class Parser {
      */
     public boolean handle(String input) throws ApolloException {
         String command = input.toLowerCase();
+
         if (command.equals("bye")) {
             Ui.exit();
             return false;
@@ -58,9 +59,10 @@ public class Parser {
      */
     private void handleRegex(String input) throws ApolloException {
         Matcher matcher;
+        String command = input.toLowerCase();
 
         // MARK
-        if (input.toLowerCase().startsWith("mark")) {
+        if (command.startsWith("mark")) {
             matcher = Pattern.compile("^mark\\s+(\\d+)$", Pattern.CASE_INSENSITIVE).matcher(input);
             if (matcher.matches()) {
                 int id = Integer.parseInt(matcher.group(1)) - 1;
@@ -79,7 +81,7 @@ public class Parser {
         }
 
         // UNMARK
-        if (input.toLowerCase().startsWith("unmark")) {
+        if (command.startsWith("unmark")) {
             matcher = Pattern.compile("^unmark\\s+(\\d+)$", Pattern.CASE_INSENSITIVE).matcher(input);
             if (matcher.matches()) {
                 int id = Integer.parseInt(matcher.group(1)) - 1;
@@ -98,7 +100,7 @@ public class Parser {
         }
 
         // TODO
-        if (input.toLowerCase().startsWith("todo")) {
+        if (command.startsWith("todo")) {
             matcher = Pattern.compile("^todo\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(input);
             if (matcher.matches()) {
                 Task task = new ToDo(matcher.group(1));
@@ -112,7 +114,7 @@ public class Parser {
         }
 
         // DEADLINE
-        if (input.toLowerCase().startsWith("deadline")) {
+        if (command.startsWith("deadline")) {
             matcher = Pattern.compile("^deadline\\s+(.+)\\s+/by\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(input);
             if (matcher.matches()) {
                 try {
@@ -130,7 +132,7 @@ public class Parser {
         }
 
         // EVENT
-        if (input.toLowerCase().startsWith("event")) {
+        if (command.startsWith("event")) {
             matcher = Pattern.compile("^event\\s+(.+)\\s+/from\\s+(.+)\\s+/to\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(input);
             if (matcher.matches()) {
                 try {
@@ -148,7 +150,7 @@ public class Parser {
         }
 
         // DELETE
-        if (input.toLowerCase().startsWith("delete")) {
+        if (command.startsWith("delete")) {
             matcher = Pattern.compile("^delete\\s+(\\d+)$", Pattern.CASE_INSENSITIVE).matcher(input);
             if (matcher.matches()) {
                 int id = Integer.parseInt(matcher.group(1)) - 1;
@@ -156,13 +158,9 @@ public class Parser {
                 if (task == null) {
                     Ui.showMessage("Unable to find task " + (id + 1));
                 } else {
-                    try {
-                        taskList.removeTask(id);
-                        Ui.delete(task, taskList.size());
-                        safeSave();
-                    } catch (DateTimeParseException e) {
-                        throw new ApolloException.InvalidDateFormatException();
-                    }
+                    taskList.removeTask(id);
+                    Ui.delete(task, taskList.size());
+                    safeSave();
                 }
             } else {
                 throw new ApolloException.InvalidFormatException("delete", "delete <task number>");
