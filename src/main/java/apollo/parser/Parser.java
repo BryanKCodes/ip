@@ -10,9 +10,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Handles parsing and processing of user input commands.
+ * Converts textual commands into actions on the TaskList and interacts with Ui and Storage.
+ */
 public class Parser {
     private TaskList taskList;
 
+    /**
+     * Constructs a Parser and loads the TaskList from storage.
+     * If loading fails, initializes an empty TaskList.
+     */
     public Parser() {
         try {
             taskList = Storage.load();
@@ -22,9 +30,11 @@ public class Parser {
     }
 
     /**
-     * Handles user input.
-     * @param input The user input string.
-     * @return true if program should continue, false if it should exit.
+     * Processes the given user input and executes the corresponding action.
+     *
+     * @param input User input string.
+     * @return true if the program should continue, false if it should exit.
+     * @throws ApolloException If the input format is invalid or refers to a non-existent task.
      */
     public boolean handle(String input) throws ApolloException {
         String command = input.toLowerCase();
@@ -40,6 +50,12 @@ public class Parser {
         return true;
     }
 
+    /**
+     * Processes user input using regular expressions for commands such as mark, unmark, todo, deadline, event, and delete.
+     *
+     * @param input User input string.
+     * @throws ApolloException If the input format is invalid, refers to a non-existent task, or uses invalid date formats.
+     */
     private void handleRegex(String input) throws ApolloException {
         Matcher matcher;
 
@@ -158,6 +174,9 @@ public class Parser {
         throw new ApolloException.UnknownCommandException();
     }
 
+    /**
+     * Saves the current TaskList to storage, displaying an error message if saving fails.
+     */
     private void safeSave() {
         try {
             Storage.save(taskList);
