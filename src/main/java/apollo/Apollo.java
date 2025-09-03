@@ -1,10 +1,10 @@
 package apollo;
 
+import java.util.Scanner;
+
 import apollo.exception.ApolloException;
 import apollo.parser.Parser;
 import apollo.ui.Ui;
-
-import java.util.Scanner;
 
 /**
  * Runs the Apollo chatbot application.

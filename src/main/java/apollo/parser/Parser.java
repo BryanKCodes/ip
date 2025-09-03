@@ -1,14 +1,18 @@
 package apollo.parser;
 
-import apollo.storage.Storage;
-import apollo.ui.Ui;
-import apollo.exception.ApolloException;
-import apollo.tasks.*;
-
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.time.format.DateTimeParseException;
+
+import apollo.exception.ApolloException;
+import apollo.storage.Storage;
+import apollo.tasks.Deadline;
+import apollo.tasks.Event;
+import apollo.tasks.Task;
+import apollo.tasks.TaskList;
+import apollo.tasks.ToDo;
+import apollo.ui.Ui;
 
 /**
  * Handles parsing and processing of user input commands.
@@ -52,10 +56,12 @@ public class Parser {
     }
 
     /**
-     * Processes user input using regular expressions for commands such as mark, unmark, todo, deadline, event, and delete.
+     * Processes user input using regular expressions for commands such as
+     * mark, unmark, todo, deadline, event, and delete.
      *
      * @param input User input string.
-     * @throws ApolloException If the input format is invalid, refers to a non-existent task, or uses invalid date formats.
+     * @throws ApolloException If the input format is invalid, refers to a non-existent task,
+     *     or uses invalid date formats.
      */
     private void handleRegex(String input) throws ApolloException {
         Matcher matcher;
@@ -115,7 +121,9 @@ public class Parser {
 
         // DEADLINE
         if (command.startsWith("deadline")) {
-            matcher = Pattern.compile("^deadline\\s+(.+)\\s+/by\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(input);
+            matcher = Pattern
+                    .compile("^deadline\\s+(.+)\\s+/by\\s+(.+)$", Pattern.CASE_INSENSITIVE)
+                    .matcher(input);
             if (matcher.matches()) {
                 try {
                     Task task = new Deadline(matcher.group(1), matcher.group(2));
@@ -133,7 +141,9 @@ public class Parser {
 
         // EVENT
         if (command.startsWith("event")) {
-            matcher = Pattern.compile("^event\\s+(.+)\\s+/from\\s+(.+)\\s+/to\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(input);
+            matcher = Pattern
+                    .compile("^event\\s+(.+)\\s+/from\\s+(.+)\\s+/to\\s+(.+)$", Pattern.CASE_INSENSITIVE)
+                    .matcher(input);
             if (matcher.matches()) {
                 try {
                     Task task = new Event(matcher.group(1), matcher.group(2), matcher.group(3));
@@ -144,7 +154,8 @@ public class Parser {
                     throw new ApolloException.InvalidDateFormatException();
                 }
             } else {
-                throw new ApolloException.InvalidFormatException("event", "event <description> /from <start> /to <end>");
+                throw new ApolloException.InvalidFormatException("event",
+                        "event <description> /from <start> /to <end>");
             }
             return;
         }

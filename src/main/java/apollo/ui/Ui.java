@@ -42,7 +42,8 @@ public class Ui {
      * @param size Current number of tasks in the list.
      */
     public static void add(Task task, int size) {
-        showMessage(String.format("Got it. I've added this task:\n  %s\nNow you have %d tasks in the list.", task, size));
+        showMessage(String.format("Got it. I've added this task:\n  %s\nNow you have %d tasks in the list.", task,
+                size));
     }
 
     /**
@@ -61,6 +62,7 @@ public class Ui {
      * @param size Current number of tasks remaining in the list.
      */
     public static void delete(Task task, int size) {
-        showMessage(String.format("Noted. I've removed this task:\n  %s\nNow you have %d tasks in the list.", task, size));
+        showMessage(String.format("Noted. I've removed this task:\n  %s\nNow you have %d tasks in the list.", task,
+                size));
     }
 }

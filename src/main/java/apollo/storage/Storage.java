@@ -1,13 +1,17 @@
 package apollo.storage;
 
-import apollo.tasks.*;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import apollo.tasks.Deadline;
+import apollo.tasks.Event;
+import apollo.tasks.Task;
+import apollo.tasks.TaskList;
+import apollo.tasks.ToDo;
 
 /**
  * Handles loading and saving of TaskList to persistent storage.
@@ -77,10 +81,10 @@ public class Storage {
         boolean isDone = !parts[1].equals("0");
 
         Task task = switch (type) {
-            case "T" -> new ToDo(parts[2]);
-            case "D" -> new Deadline(parts[2], parts[3]);
-            case "E" -> new Event(parts[2], parts[3], parts[4]);
-            default -> throw new IllegalStateException("Unexpected task type: " + type);
+        case "T" -> new ToDo(parts[2]);
+        case "D" -> new Deadline(parts[2], parts[3]);
+        case "E" -> new Event(parts[2], parts[3], parts[4]);
+        default -> throw new IllegalStateException("Unexpected task type: " + type);
         };
 
         if (isDone) {
