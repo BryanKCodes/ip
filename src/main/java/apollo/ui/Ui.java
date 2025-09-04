@@ -2,36 +2,41 @@ package apollo.ui;
 
 import apollo.tasks.Task;
 import apollo.tasks.TaskList;
+import javafx.scene.layout.VBox;
 
 /**
  * Provides user interface utilities for displaying messages to the user.
  * Handles formatted outputs such as greetings, exits, and task updates.
  */
 public class Ui {
-    /**
-     * Displays a message surrounded by borders.
-     *
-     * @param message Message to display.
-     */
-    public static void showMessage(String message) {
-        String border = "____________________________________________________________";
+    private final VBox dialogContainer;
 
-        System.out.println(border);
-        System.out.println(message);
-        System.out.println(border);
+    public Ui(VBox dialogContainer) {
+        this.dialogContainer = dialogContainer;
+    }
+
+    /**
+     * Displays a message in the dialog container
+     *
+     * @param message text of the message to display.
+     */
+    public void showMessage(String message) {
+        dialogContainer.getChildren().add(
+                new Message(message, false)
+        );
     }
 
     /**
      * Displays the greeting message when the program starts.
      */
-    public static void greet() {
-        showMessage("Hello! I'm apollo.Apollo\nWhat can I do for you?");
+    public void greet() {
+        showMessage("Hello! I'm Apollo. What can I do for you?");
     }
 
     /**
      * Displays the exit message when the program ends.
      */
-    public static void exit() {
+    public void exit() {
         showMessage("Bye. Hope to see you again soon!");
     }
 
@@ -41,7 +46,7 @@ public class Ui {
      * @param task Task that was added.
      * @param size Current number of tasks in the list.
      */
-    public static void add(Task task, int size) {
+    public void add(Task task, int size) {
         showMessage(String.format("Got it. I've added this task:\n  %s\nNow you have %d tasks in the list.", task,
                 size));
     }
@@ -51,7 +56,7 @@ public class Ui {
      *
      * @param taskList Task list to display.
      */
-    public static void list(TaskList taskList) {
+    public void list(TaskList taskList) {
         showMessage("Here are the tasks in your list:\n" + taskList.toString());
     }
 
@@ -61,7 +66,7 @@ public class Ui {
      * @param task Task that was deleted.
      * @param size Current number of tasks remaining in the list.
      */
-    public static void delete(Task task, int size) {
+    public void delete(Task task, int size) {
         showMessage(String.format("Noted. I've removed this task:\n  %s\nNow you have %d tasks in the list.", task,
                 size));
     }

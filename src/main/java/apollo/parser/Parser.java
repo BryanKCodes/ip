@@ -16,16 +16,18 @@ import apollo.ui.Ui;
 
 /**
  * Handles parsing and processing of user input commands.
- * Converts textual commands into actions on the TaskList and interacts with Ui and Storage.
+ * Converts textual commands into actions on the TaskList and interacts with ui and Storage.
  */
 public class Parser {
+    private Ui ui;
     private TaskList taskList;
 
     /**
      * Constructs a Parser and loads the TaskList from storage.
      * If loading fails, initializes an empty TaskList.
      */
-    public Parser() {
+    public Parser(Ui ui) {
+        this.ui = ui;
         try {
             taskList = Storage.load();
         } catch (Exception e) {
@@ -44,10 +46,10 @@ public class Parser {
         String command = input.toLowerCase();
 
         if (command.equals("bye")) {
-            Ui.exit();
+            ui.exit();
             return false;
         } else if (command.equals("list")) {
-            Ui.list(taskList);
+            ui.list(taskList);
         } else {
             handleRegex(input);
         }
@@ -77,7 +79,7 @@ public class Parser {
                     throw new ApolloException.TaskNotFoundException(id);
                 } else {
                     task.markAsDone();
-                    Ui.showMessage("Nice! I've marked this task as done:\n  " + task);
+                    ui.showMessage("Nice! I've marked this task as done:\n  " + task);
                     safeSave();
                 }
             } else {
@@ -96,7 +98,7 @@ public class Parser {
                     throw new ApolloException.TaskNotFoundException(id);
                 } else {
                     task.markAsUndone();
-                    Ui.showMessage("OK, I've marked this task as not done yet:\n  " + task);
+                    ui.showMessage("OK, I've marked this task as not done yet:\n  " + task);
                     safeSave();
                 }
             } else {
@@ -111,7 +113,7 @@ public class Parser {
             if (matcher.matches()) {
                 Task task = new ToDo(matcher.group(1));
                 taskList.addTask(task);
-                Ui.add(task, taskList.size());
+                ui.add(task, taskList.size());
                 safeSave();
             } else {
                 throw new ApolloException.EmptyDescriptionException("todo", "todo <description>");
@@ -128,7 +130,7 @@ public class Parser {
                 try {
                     Task task = new Deadline(matcher.group(1), matcher.group(2));
                     taskList.addTask(task);
-                    Ui.add(task, taskList.size());
+                    ui.add(task, taskList.size());
                     safeSave();
                 } catch (DateTimeParseException e) {
                     throw new ApolloException.InvalidDateFormatException();
@@ -148,7 +150,7 @@ public class Parser {
                 try {
                     Task task = new Event(matcher.group(1), matcher.group(2), matcher.group(3));
                     taskList.addTask(task);
-                    Ui.add(task, taskList.size());
+                    ui.add(task, taskList.size());
                     safeSave();
                 } catch (DateTimeParseException e) {
                     throw new ApolloException.InvalidDateFormatException();
@@ -167,10 +169,10 @@ public class Parser {
                 int id = Integer.parseInt(matcher.group(1)) - 1;
                 Task task = taskList.getTask(id);
                 if (task == null) {
-                    Ui.showMessage("Unable to find task " + (id + 1));
+                    ui.showMessage("Unable to find task " + (id + 1));
                 } else {
                     taskList.removeTask(id);
-                    Ui.delete(task, taskList.size());
+                    ui.delete(task, taskList.size());
                     safeSave();
                 }
             } else {
@@ -185,7 +187,7 @@ public class Parser {
             if (matcher.matches()) {
                 String keyword = matcher.group(1);
                 TaskList filteredTaskList = new TaskList(taskList.findTasks(keyword));
-                Ui.showMessage("Here are the matching tasks in your list:\n" + filteredTaskList.toString());
+                ui.showMessage("Here are the matching tasks in your list:\n" + filteredTaskList.toString());
             } else {
                 throw new ApolloException.InvalidFormatException("find", "find <keyword>");
             }
@@ -203,7 +205,7 @@ public class Parser {
         try {
             Storage.save(taskList);
         } catch (IOException e) {
-            Ui.showMessage("Unable to save your tasks. Changes may be lost.");
+            ui.showMessage("Unable to save your tasks. Changes may be lost.");
         }
     }
 }

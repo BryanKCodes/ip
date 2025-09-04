@@ -2,3 +2,4 @@ T | 1 | read book
 D | 0 | return book | 2019-10-15
 T | 1 | join cue club
 E | 0 | entre meeting | 2019-09-25 | 2109-09-25
+D | 1 | complete GUI | 2025-09-05
