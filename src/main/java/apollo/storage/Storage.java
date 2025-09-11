@@ -19,6 +19,11 @@ import apollo.tasks.ToDo;
  */
 public class Storage {
     private static final String FILE_PATH = "./data/apollo.txt";
+    private static final String DELIMITER = " \\| ";
+    private static final String TODO_PREFIX = "T";
+    private static final String DEADLINE_PREFIX = "D";
+    private static final String EVENT_PREFIX = "E";
+    private static final String STATUS_NOT_DONE = "0";
 
     /**
      * Loads the TaskList from storage.
@@ -76,14 +81,14 @@ public class Storage {
      * @throws IllegalStateException If the task type in the line is unrecognized.
      */
     private static Task decodeTaskFromLine(String line) {
-        String[] parts = line.split(" \\| ");
+        String[] parts = line.split(DELIMITER);
         String type = parts[0];
-        boolean isDone = !parts[1].equals("0");
+        boolean isDone = !parts[1].equals(STATUS_NOT_DONE);
 
         Task task = switch (type) {
-        case "T" -> new ToDo(parts[2]);
-        case "D" -> new Deadline(parts[2], parts[3]);
-        case "E" -> new Event(parts[2], parts[3], parts[4]);
+        case TODO_PREFIX -> new ToDo(parts[2]);
+        case DEADLINE_PREFIX -> new Deadline(parts[2], parts[3]);
+        case EVENT_PREFIX -> new Event(parts[2], parts[3], parts[4]);
         default -> throw new IllegalStateException("Unexpected task type: " + type);
         };
 
