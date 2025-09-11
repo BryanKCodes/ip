@@ -19,6 +19,11 @@ import apollo.tasks.ToDo;
  */
 public class Storage {
     private static final String FILE_PATH = "./data/apollo.txt";
+    private static final String DELIMITER = " \\| ";
+    private static final String TODO_PREFIX = "T";
+    private static final String DEADLINE_PREFIX = "D";
+    private static final String EVENT_PREFIX = "E";
+    private static final String STATUS_NOT_DONE = "0";
 
     /**
      * Loads the TaskList from storage.
@@ -79,21 +84,21 @@ public class Storage {
      */
     private static Task decodeTaskFromLine(String line) {
         assert line != null && !line.isEmpty() : "Line from save file cannot be null or empty";
+        String[] parts = line.split(DELIMITER);
 
-        String[] parts = line.split(" \\| ");
         String type = parts[0];
-        boolean isDone = !parts[1].equals("0");
+        boolean isDone = !parts[1].equals(STATUS_NOT_DONE);
 
         Task task = switch (type) {
-        case "T" -> {
+        case TODO_PREFIX -> {
             assert parts.length == 3 : "ToDo should have 3 parts";
             yield new ToDo(parts[2]);
         }
-        case "D" -> {
+        case DEADLINE_PREFIX -> {
             assert parts.length == 4 : "Deadline should have 4 parts";
             yield new Deadline(parts[2], parts[3]);
         }
-        case "E" -> {
+        case EVENT_PREFIX -> {
             assert parts.length == 5 : "Event should have 5 parts";
             yield new Event(parts[2], parts[3], parts[4]);
         }

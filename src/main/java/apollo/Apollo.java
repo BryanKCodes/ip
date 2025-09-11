@@ -22,21 +22,52 @@ import javafx.stage.Stage;
  * Initializes the parser and user interface, and manages the sending input
  */
 public class Apollo extends Application {
+    private static final double SCENE_WIDTH = 400;
+    private static final double SCENE_HEIGHT = 600;
+
+    private Parser parser;
+    private Ui ui;
+
+    private Stage stage;
+    private ScrollPane scrollPane;
+    private VBox dialogContainer;
+    private TextField userInput;
+    private Button sendButton;
+
     @Override
     public void start(Stage stage) {
-        VBox dialogContainer = new VBox();
+        this.stage = stage;
+
+        initializeUiComponents();
+        configureStageAndLayout();
+        initializeLogic();
+        wireEventHandlers();
+
+        this.stage.show();
+        ui.greet();
+    }
+
+    /**
+     * Initializes the core interactive UI components.
+     */
+    private void initializeUiComponents() {
+        dialogContainer = new VBox();
         dialogContainer.setStyle("-fx-background-color: #d8f3dc;");
 
-        ScrollPane scrollPane = new ScrollPane(dialogContainer);
+        scrollPane = new ScrollPane(dialogContainer);
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-background: #d8f3dc;");
 
-        TextField userInput = new TextField();
-        Button sendButton = new Button("Send");
+        userInput = new TextField();
+        sendButton = new Button("Send");
+    }
 
+    /**
+     * Configures the main layout, scene, and primary stage of the application.
+     */
+    private void configureStageAndLayout() {
         HBox inputArea = new HBox(10, userInput, sendButton);
         inputArea.setPadding(new Insets(8));
-
         HBox.setHgrow(userInput, Priority.ALWAYS);
         userInput.setMaxWidth(Double.MAX_VALUE);
 
@@ -45,29 +76,34 @@ public class Apollo extends Application {
         mainLayout.setBottom(inputArea);
         BorderPane.setMargin(inputArea, new Insets(8));
 
-        Scene scene = new Scene(mainLayout, 400, 600);
+        Scene scene = new Scene(mainLayout, SCENE_WIDTH, SCENE_HEIGHT);
         stage.setScene(scene);
         stage.setTitle("Apollo Chatbot");
-        stage.show();
+    }
 
-        Ui ui = new Ui(dialogContainer);
-        Parser parser = new Parser(ui);
+    /**
+     * Initializes the business logic components of the application.
+     */
+    private void initializeLogic() {
+        this.ui = new Ui(dialogContainer);
+        this.parser = new Parser(ui);
+    }
 
-        ui.greet();
-
-        Runnable handleSend = () -> {
+    /**
+     * Defines the user input handling logic and attaches it to the UI controls.
+     */
+    private void wireEventHandlers() {
+        Runnable handleUserInputCommand = () -> {
             String input = userInput.getText();
             if (input.isBlank()) {
                 return;
             }
 
-            dialogContainer.getChildren().add(
-                    new Message(input, true)
-            );
+            dialogContainer.getChildren().add(new Message(input, true));
 
             try {
-                boolean isRunning = parser.handle(input);
-                if (!isRunning) {
+                boolean shouldExit = parser.handle(input);
+                if (shouldExit) {
                     stage.close();
                 }
             } catch (ApolloException e) {
@@ -78,7 +114,7 @@ public class Apollo extends Application {
             Platform.runLater(() -> scrollPane.setVvalue(1.0));
         };
 
-        sendButton.setOnAction(event -> handleSend.run());
-        userInput.setOnAction(event -> handleSend.run());
+        sendButton.setOnAction(event -> handleUserInputCommand.run());
+        userInput.setOnAction(event -> handleUserInputCommand.run());
     }
 }
