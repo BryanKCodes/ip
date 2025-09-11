@@ -40,7 +40,7 @@ public class ApolloException extends Exception {
          * @param format The correct format for the command.
          */
         public InvalidFormatException(String command, String format) {
-            super("Were you trying to " + command + " ? The correct format is: " + format);
+            super("Were you trying to " + command + "? The correct format is: " + format);
         }
     }
 

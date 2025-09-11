@@ -102,8 +102,8 @@ public class Apollo extends Application {
             dialogContainer.getChildren().add(new Message(input, true));
 
             try {
-                boolean isRunning = parser.handle(input);
-                if (!isRunning) {
+                boolean shouldExit = parser.handle(input);
+                if (shouldExit) {
                     stage.close();
                 }
             } catch (ApolloException e) {

@@ -1,17 +1,11 @@
 package apollo.parser;
 
 import java.io.IOException;
-import java.time.format.DateTimeParseException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import apollo.commands.*;
 import apollo.exception.ApolloException;
 import apollo.storage.Storage;
-import apollo.tasks.Deadline;
-import apollo.tasks.Event;
-import apollo.tasks.Task;
 import apollo.tasks.TaskList;
-import apollo.tasks.ToDo;
 import apollo.ui.Ui;
 
 /**
@@ -43,159 +37,42 @@ public class Parser {
      * @throws ApolloException If the input format is invalid or refers to a non-existent task.
      */
     public boolean handle(String input) throws ApolloException {
-        String command = input.toLowerCase();
+        String inputLower = input.toLowerCase();
+        Command command;
+        boolean shouldExit = false;
+        boolean shouldUpdateStorage = true;
 
-        if (command.equals("bye")) {
-            ui.exit();
-            return false;
-        } else if (command.equals("list")) {
-            ui.list(taskList);
+        if (inputLower.startsWith("list")) {
+            command = new ListCommand();
+            shouldUpdateStorage = false;
+        } else if (inputLower.startsWith("mark")) {
+            command = new MarkCommand();
+        } else if (inputLower.startsWith("unmark")) {
+            command = new UnmarkCommand();
+        } else if (inputLower.startsWith("delete")) {
+            command = new DeleteCommand();
+        } else if (inputLower.startsWith("todo")) {
+            command = new ToDoCommand();
+        } else if (inputLower.startsWith("deadline")) {
+            command = new DeadlineCommand();
+        } else if (inputLower.startsWith("event")) {
+            command = new EventCommand();
+        } else if (inputLower.startsWith("find")) {
+            command = new FindCommand();
+            shouldUpdateStorage = false;
+        } else if (inputLower.startsWith("bye")) {
+            command = new ByeCommand();
+            shouldExit = true;
+            shouldUpdateStorage = false;
         } else {
-            handleRegex(input);
+            throw new ApolloException.UnknownCommandException();
         }
 
-        return true;
-    }
-
-    /**
-     * Processes user input using regular expressions for commands such as
-     * mark, unmark, todo, deadline, event, and delete.
-     *
-     * @param input User input string.
-     * @throws ApolloException If the input format is invalid, refers to a non-existent task,
-     *     or uses invalid date formats.
-     */
-    private void handleRegex(String input) throws ApolloException {
-        Matcher matcher;
-        String command = input.toLowerCase();
-
-        // MARK
-        if (command.startsWith("mark")) {
-            matcher = Pattern.compile("^mark\\s+(\\d+)$", Pattern.CASE_INSENSITIVE).matcher(input);
-            if (matcher.matches()) {
-                int id = Integer.parseInt(matcher.group(1)) - 1;
-                Task task = taskList.getTask(id);
-                if (task == null) {
-                    throw new ApolloException.TaskNotFoundException(id);
-                } else {
-                    task.markAsDone();
-                    ui.showMessage("Nice! I've marked this task as done:\n  " + task);
-                    safeSave();
-                }
-            } else {
-                throw new ApolloException.InvalidFormatException("mark", "mark <task number>");
-            }
-            return;
+        command.run(input, ui, taskList);
+        if (shouldUpdateStorage) {
+            safeSave();
         }
-
-        // UNMARK
-        if (command.startsWith("unmark")) {
-            matcher = Pattern.compile("^unmark\\s+(\\d+)$", Pattern.CASE_INSENSITIVE).matcher(input);
-            if (matcher.matches()) {
-                int id = Integer.parseInt(matcher.group(1)) - 1;
-                Task task = taskList.getTask(id);
-                if (task == null) {
-                    throw new ApolloException.TaskNotFoundException(id);
-                } else {
-                    task.markAsUndone();
-                    ui.showMessage("OK, I've marked this task as not done yet:\n  " + task);
-                    safeSave();
-                }
-            } else {
-                throw new ApolloException.InvalidFormatException("unmark", "unmark <task number>");
-            }
-            return;
-        }
-
-        // TODO
-        if (command.startsWith("todo")) {
-            matcher = Pattern.compile("^todo\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(input);
-            if (matcher.matches()) {
-                Task task = new ToDo(matcher.group(1));
-                taskList.addTask(task);
-                ui.add(task, taskList.size());
-                safeSave();
-            } else {
-                throw new ApolloException.EmptyDescriptionException("todo", "todo <description>");
-            }
-            return;
-        }
-
-        // DEADLINE
-        if (command.startsWith("deadline")) {
-            matcher = Pattern
-                    .compile("^deadline\\s+(.+)\\s+/by\\s+(.+)$", Pattern.CASE_INSENSITIVE)
-                    .matcher(input);
-            if (matcher.matches()) {
-                try {
-                    Task task = new Deadline(matcher.group(1), matcher.group(2));
-                    taskList.addTask(task);
-                    ui.add(task, taskList.size());
-                    safeSave();
-                } catch (DateTimeParseException e) {
-                    throw new ApolloException.InvalidDateFormatException();
-                }
-            } else {
-                throw new ApolloException.InvalidFormatException("deadline", "deadline <description> /by <time>");
-            }
-            return;
-        }
-
-        // EVENT
-        if (command.startsWith("event")) {
-            matcher = Pattern
-                    .compile("^event\\s+(.+)\\s+/from\\s+(.+)\\s+/to\\s+(.+)$", Pattern.CASE_INSENSITIVE)
-                    .matcher(input);
-            if (matcher.matches()) {
-                try {
-                    Task task = new Event(matcher.group(1), matcher.group(2), matcher.group(3));
-                    taskList.addTask(task);
-                    ui.add(task, taskList.size());
-                    safeSave();
-                } catch (DateTimeParseException e) {
-                    throw new ApolloException.InvalidDateFormatException();
-                }
-            } else {
-                throw new ApolloException.InvalidFormatException("event",
-                        "event <description> /from <start> /to <end>");
-            }
-            return;
-        }
-
-        // DELETE
-        if (command.startsWith("delete")) {
-            matcher = Pattern.compile("^delete\\s+(\\d+)$", Pattern.CASE_INSENSITIVE).matcher(input);
-            if (matcher.matches()) {
-                int id = Integer.parseInt(matcher.group(1)) - 1;
-                Task task = taskList.getTask(id);
-                if (task == null) {
-                    ui.showMessage("Unable to find task " + (id + 1));
-                } else {
-                    taskList.removeTask(id);
-                    ui.delete(task, taskList.size());
-                    safeSave();
-                }
-            } else {
-                throw new ApolloException.InvalidFormatException("delete", "delete <task number>");
-            }
-            return;
-        }
-
-        // FIND
-        if (input.toLowerCase().startsWith("find")) {
-            matcher = Pattern.compile("^find\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(input);
-            if (matcher.matches()) {
-                String keyword = matcher.group(1);
-                TaskList filteredTaskList = new TaskList(taskList.findTasks(keyword));
-                ui.showMessage("Here are the matching tasks in your list:\n" + filteredTaskList.toString());
-            } else {
-                throw new ApolloException.InvalidFormatException("find", "find <keyword>");
-            }
-            return;
-        }
-
-        // fallback
-        throw new ApolloException.UnknownCommandException();
+        return shouldExit;
     }
 
     /**
