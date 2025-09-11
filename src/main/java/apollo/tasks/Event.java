@@ -20,6 +20,8 @@ public class Event extends Task {
      */
     public Event(String description, String start, String end) {
         super(description);
+        assert start != null && !start.trim().isEmpty() : "Event 'start' string cannot be null or empty";
+        assert end != null && !end.trim().isEmpty() : "Event 'end' string cannot be null or empty";
         this.start = LocalDate.parse(start);
         this.end = LocalDate.parse(end);
     }
