@@ -7,6 +7,9 @@ import apollo.tasks.Task;
 import apollo.tasks.TaskList;
 import apollo.ui.Ui;
 
+/**
+ * Represents a command to mark a task as undone.
+ */
 public class UnmarkCommand extends Command {
     private static final String PATTERN = "^unmark\\s+(\\d+)$";
     private Matcher matcher;

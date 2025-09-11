@@ -6,6 +6,9 @@ import apollo.exception.ApolloException;
 import apollo.tasks.TaskList;
 import apollo.ui.Ui;
 
+/**
+ * Represents a command to find tasks in the task list.
+ */
 public class FindCommand extends Command {
     private static final String PATTERN = "^find\\s+(.+)$";
     private Matcher matcher;

@@ -9,6 +9,9 @@ import apollo.tasks.Task;
 import apollo.tasks.TaskList;
 import apollo.ui.Ui;
 
+/**
+ * Represents a command to create a new Event task.
+ */
 public class EventCommand extends Command {
     private static final String PATTERN = "^event\\s+(.+)\\s+/from\\s+(.+)\\s+/to\\s+(.+)$";
     private Matcher matcher;

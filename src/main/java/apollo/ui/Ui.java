@@ -11,6 +11,11 @@ import javafx.scene.layout.VBox;
 public class Ui {
     private final VBox dialogContainer;
 
+    /**
+     * Constructs a Ui object with a specified dialog container.
+     *
+     * @param dialogContainer The VBox container where messages will be displayed. Must not be null.
+     */
     public Ui(VBox dialogContainer) {
         assert dialogContainer != null : "VBox dialogContainer must not be null";
         this.dialogContainer = dialogContainer;

@@ -9,6 +9,9 @@ import apollo.tasks.Task;
 import apollo.tasks.TaskList;
 import apollo.ui.Ui;
 
+/**
+ * Represents a command to create a new Deadline task.
+ */
 public class DeadlineCommand extends Command {
     private static final String PATTERN = "^deadline\\s+(.+)\\s+/by\\s+(.+)$";
     private Matcher matcher;

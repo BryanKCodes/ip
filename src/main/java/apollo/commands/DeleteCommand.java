@@ -7,6 +7,9 @@ import apollo.tasks.Task;
 import apollo.tasks.TaskList;
 import apollo.ui.Ui;
 
+/**
+ * Represents a command to delete a task.
+ */
 public class DeleteCommand extends Command {
     private static final String PATTERN = "^delete\\s+(\\d+)$";
     private Matcher matcher;

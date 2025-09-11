@@ -8,6 +8,9 @@ import apollo.tasks.TaskList;
 import apollo.tasks.ToDo;
 import apollo.ui.Ui;
 
+/**
+ * Represents a command to create a new ToDo task.
+ */
 public class ToDoCommand extends Command {
     private static final String PATTERN = "^todo\\s+(.+)$";
     private Matcher matcher;
