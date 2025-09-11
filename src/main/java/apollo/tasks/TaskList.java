@@ -24,6 +24,8 @@ public class TaskList {
      * @param task Task to be added.
      */
     public void addTask(Task task) {
+        assert task != null : "Cannot add a null task to the list";
+
         tasks.add(task);
     }
 
@@ -33,6 +35,8 @@ public class TaskList {
      * @param id Index of the task to remove (0-based).
      */
     public void removeTask(int id) {
+        assert id >= 0 && id < tasks.size() : "Task index is out of bounds";
+
         tasks.remove(id);
     }
 
