@@ -14,8 +14,8 @@ public class MarkCommand extends Command {
     private static final String PATTERN = "^mark\\s+(\\d+)$";
     private Matcher matcher;
 
-    public MarkCommand() {
-        super(PATTERN);
+    public MarkCommand(String input) {
+        super(PATTERN, input);
     }
 
     @Override
@@ -37,5 +37,8 @@ public class MarkCommand extends Command {
 
         task.markAsDone();
         ui.showMessage("Nice! I've marked this task as done:\n  " + task);
+
+        UnmarkCommand cmd = new UnmarkCommand("unmark " + (id + 1));
+        setUndoExecutable(() -> cmd.run(ui, taskList));
     }
 }

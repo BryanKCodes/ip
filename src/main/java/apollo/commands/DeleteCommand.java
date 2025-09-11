@@ -3,8 +3,11 @@ package apollo.commands;
 import java.util.regex.Matcher;
 
 import apollo.exception.ApolloException;
+import apollo.tasks.Deadline;
+import apollo.tasks.Event;
 import apollo.tasks.Task;
 import apollo.tasks.TaskList;
+import apollo.tasks.ToDo;
 import apollo.ui.Ui;
 
 /**
@@ -14,8 +17,8 @@ public class DeleteCommand extends Command {
     private static final String PATTERN = "^delete\\s+(\\d+)$";
     private Matcher matcher;
 
-    public DeleteCommand() {
-        super(PATTERN);
+    public DeleteCommand(String input) {
+        super(PATTERN, input);
     }
 
     @Override
@@ -37,5 +40,10 @@ public class DeleteCommand extends Command {
 
         taskList.removeTask(id);
         ui.delete(task, taskList.size());
+
+        setUndoExecutable(() -> {
+            taskList.addTask(task);
+            ui.add(task, taskList.size());
+        });
     }
 }

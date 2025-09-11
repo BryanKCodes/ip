@@ -13,8 +13,8 @@ public class FindCommand extends Command {
     private static final String PATTERN = "^find\\s+(.+)$";
     private Matcher matcher;
 
-    public FindCommand() {
-        super(PATTERN);
+    public FindCommand(String input) {
+        super(PATTERN, input);
     }
 
     @Override

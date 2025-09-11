@@ -71,6 +71,18 @@ public class ApolloException extends Exception {
     }
 
     /**
+     * Exception thrown when there are no commands available to undo.
+     */
+    public static class NothingToUndoException extends ApolloException {
+        /**
+         * Constructs a NothingToUndoException with a default message.
+         */
+        public NothingToUndoException() {
+            super("There is nothing left to undo");
+        }
+    }
+
+    /**
      * Exception thrown when a user enters an unknown or unsupported command.
      */
     public static class UnknownCommandException extends ApolloException {

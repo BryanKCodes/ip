@@ -7,13 +7,13 @@ import apollo.tasks.TaskList;
 import apollo.ui.Ui;
 
 /**
- * Represents a command to list all tasks in the task list.
+ * Represents a command to undo the previous command.
  */
-public class ListCommand extends Command {
-    private static final String PATTERN = "^list$";
+public class UndoCommand extends Command {
+    private static final String PATTERN = "^undo$";
     private Matcher matcher;
 
-    public ListCommand(String input) {
+    public UndoCommand(String input) {
         super(PATTERN, input);
     }
 
@@ -21,12 +21,12 @@ public class ListCommand extends Command {
     public void match(String input) throws ApolloException {
         matcher = super.matcher(input);
         if (!matcher.matches()) {
-            throw new ApolloException.InvalidFormatException("list", "list");
+            throw new ApolloException.InvalidFormatException("undo", "undo");
         }
     }
 
     @Override
     public void execute(Ui ui, TaskList taskList) throws ApolloException {
-        ui.list(taskList);
+        CommandStack.undo();
     }
 }

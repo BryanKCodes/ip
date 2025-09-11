@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import apollo.commands.ByeCommand;
 import apollo.commands.Command;
+import apollo.commands.CommandStack;
 import apollo.commands.DeadlineCommand;
 import apollo.commands.DeleteCommand;
 import apollo.commands.EventCommand;
@@ -11,6 +12,7 @@ import apollo.commands.FindCommand;
 import apollo.commands.ListCommand;
 import apollo.commands.MarkCommand;
 import apollo.commands.ToDoCommand;
+import apollo.commands.UndoCommand;
 import apollo.commands.UnmarkCommand;
 import apollo.exception.ApolloException;
 import apollo.storage.Storage;
@@ -54,32 +56,35 @@ public class Parser {
         boolean shouldUpdateStorage = true;
 
         if (inputLower.startsWith("list")) {
-            command = new ListCommand();
+            command = new ListCommand(input);
             shouldUpdateStorage = false;
         } else if (inputLower.startsWith("mark")) {
-            command = new MarkCommand();
+            command = new MarkCommand(input);
         } else if (inputLower.startsWith("unmark")) {
-            command = new UnmarkCommand();
+            command = new UnmarkCommand(input);
         } else if (inputLower.startsWith("delete")) {
-            command = new DeleteCommand();
+            command = new DeleteCommand(input);
         } else if (inputLower.startsWith("todo")) {
-            command = new ToDoCommand();
+            command = new ToDoCommand(input);
         } else if (inputLower.startsWith("deadline")) {
-            command = new DeadlineCommand();
+            command = new DeadlineCommand(input);
         } else if (inputLower.startsWith("event")) {
-            command = new EventCommand();
+            command = new EventCommand(input);
         } else if (inputLower.startsWith("find")) {
-            command = new FindCommand();
+            command = new FindCommand(input);
             shouldUpdateStorage = false;
+        } else if (inputLower.startsWith("undo")) {
+            command = new UndoCommand(input);
         } else if (inputLower.startsWith("bye")) {
-            command = new ByeCommand();
+            command = new ByeCommand(input);
             shouldExit = true;
             shouldUpdateStorage = false;
         } else {
             throw new ApolloException.UnknownCommandException();
         }
 
-        command.run(input, ui, taskList);
+        command.run(ui, taskList);
+        CommandStack.push(command);
         if (shouldUpdateStorage) {
             safeSave();
         }

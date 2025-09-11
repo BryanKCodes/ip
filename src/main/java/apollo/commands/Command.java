@@ -13,14 +13,17 @@ import apollo.ui.Ui;
  */
 public abstract class Command {
     private final Pattern pattern;
+    private String input;
+    private Executable undoExecutable;
 
     /**
      * Constructs a command with a specific regex pattern to match user input.
      *
      * @param pattern The regex pattern for this command.
      */
-    protected Command(String pattern) {
-        this.pattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);;
+    protected Command(String pattern, String input) {
+        this.pattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+        this.input = input;
     }
 
     /**
@@ -52,15 +55,31 @@ public abstract class Command {
 
     /**
      * Runs the command by first validating the input and then
-     * executing the command's behavior if validation succeeds
+     * executing the command's behavior if validation succeeds.
      *
-     * @param input The user input string.
      * @param ui The user interface to interact with.
      * @param taskList The list of tasks to operate on.
      * @throws ApolloException If the input is invalid or execution fails.
      */
-    public final void run(String input, Ui ui, TaskList taskList) throws ApolloException {
+    public final void run(Ui ui, TaskList taskList) throws ApolloException {
         match(input);
         execute(ui, taskList);
+    }
+
+    public void setUndoExecutable(Executable executable) {
+        undoExecutable = executable;
+    }
+
+    /**
+     * Undoes the action done by this command.
+     *
+     * @throws UnsupportedOperationException If undo command not defined.
+     */
+    public void undo() throws ApolloException {
+        if (undoExecutable == null) {
+            throw new UnsupportedOperationException("Undo not supported for this command");
+        } else {
+            undoExecutable.execute();
+        }
     }
 }

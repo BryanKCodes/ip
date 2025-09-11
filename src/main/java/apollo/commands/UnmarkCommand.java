@@ -14,8 +14,8 @@ public class UnmarkCommand extends Command {
     private static final String PATTERN = "^unmark\\s+(\\d+)$";
     private Matcher matcher;
 
-    public UnmarkCommand() {
-        super(PATTERN);
+    public UnmarkCommand(String input) {
+        super(PATTERN, input);
     }
 
     @Override
@@ -37,5 +37,8 @@ public class UnmarkCommand extends Command {
 
         task.markAsUndone();
         ui.showMessage("OK, I've marked this task as not done yet:\n  " + task);
+
+        MarkCommand cmd = new MarkCommand("mark " + (id + 1));
+        setUndoExecutable(() -> cmd.run(ui, taskList));
     }
 }

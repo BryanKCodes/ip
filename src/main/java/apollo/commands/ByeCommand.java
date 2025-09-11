@@ -13,8 +13,8 @@ public class ByeCommand extends Command {
     private static final String PATTERN = "^bye$";
     private Matcher matcher;
 
-    public ByeCommand() {
-        super(PATTERN);
+    public ByeCommand(String input) {
+        super(PATTERN, input);
     }
 
     @Override

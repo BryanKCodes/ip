@@ -15,8 +15,8 @@ public class ToDoCommand extends Command {
     private static final String PATTERN = "^todo\\s+(.+)$";
     private Matcher matcher;
 
-    public ToDoCommand() {
-        super(PATTERN);
+    public ToDoCommand(String input) {
+        super(PATTERN, input);
     }
 
     @Override
@@ -31,6 +31,10 @@ public class ToDoCommand extends Command {
     public void execute(Ui ui, TaskList taskList) {
         Task task = new ToDo(matcher.group(1));
         taskList.addTask(task);
-        ui.add(task, taskList.size());
+        int size = taskList.size();
+        ui.add(task, size);
+
+        DeleteCommand cmd = new DeleteCommand("delete " + size);
+        setUndoExecutable(() -> cmd.run(ui, taskList));
     }
 }

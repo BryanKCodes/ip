@@ -16,8 +16,8 @@ public class EventCommand extends Command {
     private static final String PATTERN = "^event\\s+(.+)\\s+/from\\s+(.+)\\s+/to\\s+(.+)$";
     private Matcher matcher;
 
-    public EventCommand() {
-        super(PATTERN);
+    public EventCommand(String input) {
+        super(PATTERN, input);
     }
 
     @Override
@@ -34,7 +34,11 @@ public class EventCommand extends Command {
         try {
             Task task = new Event(matcher.group(1), matcher.group(2), matcher.group(3));
             taskList.addTask(task);
-            ui.add(task, taskList.size());
+            int size = taskList.size();;
+            ui.add(task, size);
+
+            DeleteCommand cmd = new DeleteCommand("delete " + size);
+            setUndoExecutable(() -> cmd.run(ui, taskList));
         } catch (DateTimeParseException e) {
             throw new ApolloException.InvalidDateFormatException();
         }
