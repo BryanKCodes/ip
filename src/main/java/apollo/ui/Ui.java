@@ -12,6 +12,7 @@ public class Ui {
     private final VBox dialogContainer;
 
     public Ui(VBox dialogContainer) {
+        assert dialogContainer != null : "VBox dialogContainer must not be null";
         this.dialogContainer = dialogContainer;
     }
 
@@ -47,6 +48,9 @@ public class Ui {
      * @param size Current number of tasks in the list.
      */
     public void add(Task task, int size) {
+        assert task != null : "Added task cannot be null";
+        assert size > 0 : "Size should be positive after adding a task";
+
         showMessage(String.format("Got it. I've added this task:\n  %s\nNow you have %d tasks in the list.", task,
                 size));
     }
@@ -57,7 +61,9 @@ public class Ui {
      * @param taskList Task list to display.
      */
     public void list(TaskList taskList) {
-        showMessage("Here are the tasks in your list:\n" + taskList.toString());
+        assert taskList != null : "TaskList to list cannot be null";
+
+        showMessage("Here are the tasks in your list:\n" + taskList);
     }
 
     /**
@@ -67,6 +73,9 @@ public class Ui {
      * @param size Current number of tasks remaining in the list.
      */
     public void delete(Task task, int size) {
+        assert task != null : "Deleted task cannot be null";
+        assert size >= 0 : "Size cannot be less that zero after deletion";
+
         showMessage(String.format("Noted. I've removed this task:\n  %s\nNow you have %d tasks in the list.", task,
                 size));
     }

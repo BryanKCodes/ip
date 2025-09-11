@@ -21,6 +21,8 @@ public class Parser {
      * If loading fails, initializes an empty TaskList.
      */
     public Parser(Ui ui) {
+        assert ui != null : "Ui must not be null";
+
         this.ui = ui;
         try {
             taskList = Storage.load();

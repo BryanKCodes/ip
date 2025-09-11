@@ -60,6 +60,8 @@ public class Storage {
      * @throws IOException If an I/O error occurs during writing.
      */
     public static void save(TaskList tasks) throws IOException {
+        assert tasks != null : "TaskList to be saved cannot be null";
+
         File file = new File(FILE_PATH);
         file.getParentFile().mkdirs();
 
@@ -81,14 +83,25 @@ public class Storage {
      * @throws IllegalStateException If the task type in the line is unrecognized.
      */
     private static Task decodeTaskFromLine(String line) {
+        assert line != null && !line.isEmpty() : "Line from save file cannot be null or empty";
         String[] parts = line.split(DELIMITER);
+
         String type = parts[0];
         boolean isDone = !parts[1].equals(STATUS_NOT_DONE);
 
         Task task = switch (type) {
-        case TODO_PREFIX -> new ToDo(parts[2]);
-        case DEADLINE_PREFIX -> new Deadline(parts[2], parts[3]);
-        case EVENT_PREFIX -> new Event(parts[2], parts[3], parts[4]);
+        case TODO_PREFIX -> {
+            assert parts.length == 3 : "ToDo should have 3 parts";
+            yield new ToDo(parts[2]);
+        }
+        case DEADLINE_PREFIX -> {
+            assert parts.length == 4 : "Deadline should have 4 parts";
+            yield new Deadline(parts[2], parts[3]);
+        }
+        case EVENT_PREFIX -> {
+            assert parts.length == 5 : "Event should have 5 parts";
+            yield new Event(parts[2], parts[3], parts[4]);
+        }
         default -> throw new IllegalStateException("Unexpected task type: " + type);
         };
 
