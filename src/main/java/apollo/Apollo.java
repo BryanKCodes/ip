@@ -4,9 +4,8 @@ import apollo.exception.ApolloException;
 import apollo.parser.Parser;
 import apollo.ui.Message;
 import apollo.ui.Ui;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -15,11 +14,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
- * Starts the Apollo chatbot application.
- * Initializes the parser and user interface, and manages the sending input
+ * Starts the Apollo chatbot application with an improved, CSS-styled UI.
  */
 public class Apollo extends Application {
     private static final double SCENE_WIDTH = 400;
@@ -27,7 +28,6 @@ public class Apollo extends Application {
 
     private Parser parser;
     private Ui ui;
-
     private Stage stage;
     private ScrollPane scrollPane;
     private VBox dialogContainer;
@@ -37,7 +37,6 @@ public class Apollo extends Application {
     @Override
     public void start(Stage stage) {
         this.stage = stage;
-
         initializeUiComponents();
         configureStageAndLayout();
         initializeLogic();
@@ -48,37 +47,58 @@ public class Apollo extends Application {
     }
 
     /**
-     * Initializes the core interactive UI components.
+     * Initializes the core interactive UI components and applies CSS styling.
      */
     private void initializeUiComponents() {
         dialogContainer = new VBox();
-        dialogContainer.setStyle("-fx-background-color: #d8f3dc;");
+        dialogContainer.getStyleClass().add("dialog-container");
 
         scrollPane = new ScrollPane(dialogContainer);
         scrollPane.setFitToWidth(true);
-        scrollPane.setStyle("-fx-background: #d8f3dc;");
+        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty()); // Auto-scroll
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Hide horizontal scrollbar
 
         userInput = new TextField();
-        sendButton = new Button("Send");
+        userInput.setPromptText("Type a message...");
+
+        sendButton = new Button();
+
+        // Create an SVG icon for the send button
+        SVGPath sendIcon = new SVGPath();
+        sendIcon.setContent("M2 21l21-9L2 3v7l15 2-15 2v7z");
+        sendIcon.setFill(Color.WHITE);
+        sendIcon.setScaleX(0.7);
+        sendIcon.setScaleY(0.7);
+        sendIcon.setTranslateX(2);
+
+        sendButton.setGraphic(sendIcon);
     }
 
     /**
      * Configures the main layout, scene, and primary stage of the application.
      */
     private void configureStageAndLayout() {
-        HBox inputArea = new HBox(10, userInput, sendButton);
-        inputArea.setPadding(new Insets(8));
+        HBox inputArea = new HBox(userInput, sendButton);
+        inputArea.getStyleClass().add("input-area");
         HBox.setHgrow(userInput, Priority.ALWAYS);
-        userInput.setMaxWidth(Double.MAX_VALUE);
+
+        // Apply style classes from CSS
+        userInput.getStyleClass().add("text-field");
+        sendButton.getStyleClass().add("send-button");
 
         BorderPane mainLayout = new BorderPane();
         mainLayout.setCenter(scrollPane);
         mainLayout.setBottom(inputArea);
-        BorderPane.setMargin(inputArea, new Insets(8));
 
         Scene scene = new Scene(mainLayout, SCENE_WIDTH, SCENE_HEIGHT);
+        // Load the stylesheet
+        String cssPath = this.getClass().getResource("/css/styles.css").toExternalForm();
+        scene.getStylesheets().add(cssPath);
+
         stage.setScene(scene);
-        stage.setTitle("Apollo Chatbot");
+        stage.setTitle("Apollo");
+        stage.setMinWidth(350);
+        stage.setMinHeight(500);
     }
 
     /**
@@ -98,20 +118,21 @@ public class Apollo extends Application {
             if (input.isBlank()) {
                 return;
             }
-
             dialogContainer.getChildren().add(new Message(input, true));
 
             try {
                 boolean shouldExit = parser.handle(input);
                 if (shouldExit) {
-                    stage.close();
+                    // Add a delay before closing for a smoother exit
+                    PauseTransition delay = new PauseTransition(Duration.seconds(1));
+                    delay.setOnFinished(event -> stage.close());
+                    delay.play();
                 }
             } catch (ApolloException e) {
                 ui.showMessage(e.getMessage());
+            } finally {
+                userInput.clear();
             }
-
-            userInput.clear();
-            Platform.runLater(() -> scrollPane.setVvalue(1.0));
         };
 
         sendButton.setOnAction(event -> handleUserInputCommand.run());
