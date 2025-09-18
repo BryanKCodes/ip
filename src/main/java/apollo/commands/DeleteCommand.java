@@ -3,11 +3,8 @@ package apollo.commands;
 import java.util.regex.Matcher;
 
 import apollo.exception.ApolloException;
-import apollo.tasks.Deadline;
-import apollo.tasks.Event;
 import apollo.tasks.Task;
 import apollo.tasks.TaskList;
-import apollo.tasks.ToDo;
 import apollo.ui.Ui;
 
 /**
