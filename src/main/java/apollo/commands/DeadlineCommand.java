@@ -24,7 +24,7 @@ public class DeadlineCommand extends Command {
     public void match(String input) throws ApolloException {
         matcher = super.matcher(input);
         if (!matcher.matches()) {
-            throw new ApolloException.InvalidFormatException("deadline", "deadline <description> /by <time>");
+            throw new ApolloException.InvalidFormatException("deadline", "deadline <DESCRIPTION> /by <DATE>");
         }
     }
 

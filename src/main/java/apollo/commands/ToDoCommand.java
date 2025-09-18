@@ -23,7 +23,7 @@ public class ToDoCommand extends Command {
     public void match(String input) throws ApolloException {
         matcher = super.matcher(input);
         if (!matcher.matches()) {
-            throw new ApolloException.EmptyDescriptionException("todo", "todo <description>");
+            throw new ApolloException.EmptyDescriptionException("todo", "todo <DESCRIPTION>");
         }
     }
 

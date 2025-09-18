@@ -21,7 +21,7 @@ public class ListCommand extends Command {
     public void match(String input) throws ApolloException {
         matcher = super.matcher(input);
         if (!matcher.matches()) {
-            throw new ApolloException.InvalidFormatException("list", "list");
+            throw new ApolloException.InvalidFormatException("list tasks", "list");
         }
     }
 

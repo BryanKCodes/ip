@@ -21,7 +21,7 @@ public class FindCommand extends Command {
     public void match(String input) throws ApolloException {
         matcher = super.matcher(input);
         if (!matcher.matches()) {
-            throw new ApolloException.InvalidFormatException("find", "find <keyword>");
+            throw new ApolloException.InvalidFormatException("find", "find <KEYWORD>");
         }
     }
 

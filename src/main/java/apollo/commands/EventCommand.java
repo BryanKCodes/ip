@@ -25,7 +25,7 @@ public class EventCommand extends Command {
         matcher = super.matcher(input);
         if (!matcher.matches()) {
             throw new ApolloException.InvalidFormatException("event",
-                    "event <description> /from <start> /to <end>");
+                    "event <description> /from <START> /to <END>");
         }
     }
 

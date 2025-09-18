@@ -22,7 +22,7 @@ public class UnmarkCommand extends Command {
     public void match(String input) throws ApolloException {
         matcher = super.matcher(input);
         if (!matcher.matches()) {
-            throw new ApolloException.InvalidFormatException("unmark", "unmark <task number>");
+            throw new ApolloException.InvalidFormatException("unmark", "unmark <TASK_NUMBER>");
         }
     }
 

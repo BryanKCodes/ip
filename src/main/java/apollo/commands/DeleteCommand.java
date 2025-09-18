@@ -22,7 +22,7 @@ public class DeleteCommand extends Command {
     public void match(String input) throws ApolloException {
         matcher = super.matcher(input);
         if (!matcher.matches()) {
-            throw new ApolloException.InvalidFormatException("delete", "delete <task number>");
+            throw new ApolloException.InvalidFormatException("delete", "delete <TASK_NUMBER>");
         }
     }
 

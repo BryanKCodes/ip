@@ -22,7 +22,7 @@ public class MarkCommand extends Command {
     public void match(String input) throws ApolloException {
         matcher = super.matcher(input);
         if (!matcher.matches()) {
-            throw new ApolloException.InvalidFormatException("mark", "mark <task number>");
+            throw new ApolloException.InvalidFormatException("mark", "mark <TASK_NUMBER>");
         }
     }
 
