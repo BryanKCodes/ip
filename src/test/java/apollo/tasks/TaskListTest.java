@@ -48,6 +48,27 @@ class TaskListTest {
     }
 
     @Test
+    void findTasks_returnsMatchingTasks() {
+        list.addTask(t1);
+        list.addTask(t2);
+
+        var result1 = list.findTasks("milk");
+        assertEquals(1, result1.size());
+        assertEquals(t1, result1.get(0));
+
+        var result2 = list.findTasks("return");
+        assertEquals(1, result2.size());
+        assertEquals(t2, result2.get(0));
+
+        var result3 = list.findTasks("BOOK");
+        assertEquals(1, result3.size());
+        assertEquals(t2, result3.get(0));
+
+        var result4 = list.findTasks("eggs");
+        assertEquals(0, result4.size());
+    }
+
+    @Test
     void toString_returnsExpectedFormat() {
         list.addTask(t1);
         list.addTask(t2);

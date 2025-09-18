@@ -12,7 +12,7 @@ public class Ui {
     private final VBox dialogContainer;
 
     /**
-     * Constructs a Ui object with a specified dialog container.
+     * Constructs an Ui object with a specified dialog container.
      *
      * @param dialogContainer The VBox container where messages will be displayed. Must not be null.
      */
