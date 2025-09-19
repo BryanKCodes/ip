@@ -12,7 +12,7 @@ import apollo.ui.Ui;
 /**
  * Represents a command to create a new Event task.
  */
-public class EventCommand extends Command {
+public class EventCommand extends TaskCommand {
     private static final String PATTERN = "^event\\s+(.+)\\s+/from\\s+(.+)\\s+/to\\s+(.+)$";
     private Matcher matcher;
 

@@ -10,7 +10,7 @@ import apollo.ui.Ui;
 /**
  * Represents a command to delete a task.
  */
-public class DeleteCommand extends Command {
+public class DeleteCommand extends TaskCommand {
     private static final String PATTERN = "^delete\\s+(\\d+)$";
     private Matcher matcher;
 

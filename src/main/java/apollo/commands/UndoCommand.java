@@ -9,7 +9,7 @@ import apollo.ui.Ui;
 /**
  * Represents a command to undo the previous command.
  */
-public class UndoCommand extends Command {
+public class UndoCommand extends TaskCommand {
     private static final String PATTERN = "^undo$";
     private Matcher matcher;
 

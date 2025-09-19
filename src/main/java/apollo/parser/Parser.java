@@ -1,6 +1,8 @@
 package apollo.parser;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 import apollo.commands.ByeCommand;
 import apollo.commands.Command;
@@ -24,6 +26,22 @@ import apollo.ui.Ui;
  * Converts textual commands into actions on the TaskList and interacts with ui and Storage.
  */
 public class Parser {
+    private static final Map<String, Function<String, Command>> COMMAND_MAP = new HashMap<>();
+    private static final String DELIMITER = "\\s+";
+
+    static {
+        COMMAND_MAP.put("list", ListCommand::new);
+        COMMAND_MAP.put("mark", MarkCommand::new);
+        COMMAND_MAP.put("unmark", UnmarkCommand::new);
+        COMMAND_MAP.put("delete", DeleteCommand::new);
+        COMMAND_MAP.put("todo", ToDoCommand::new);
+        COMMAND_MAP.put("deadline", DeadlineCommand::new);
+        COMMAND_MAP.put("event", EventCommand::new);
+        COMMAND_MAP.put("find", FindCommand::new);
+        COMMAND_MAP.put("undo", UndoCommand::new);
+        COMMAND_MAP.put("bye", ByeCommand::new);
+    }
+
     private Ui ui;
     private TaskList taskList;
 
@@ -51,54 +69,19 @@ public class Parser {
      */
     public boolean handle(String input) throws ApolloException {
         String inputLower = input.toLowerCase();
-        Command command;
-        boolean shouldExit = false;
-        boolean shouldUpdateStorage = true;
+        String[] parts = inputLower.split(DELIMITER, 2);
+        String commandWord = parts[0];
 
-        if (inputLower.startsWith("list")) {
-            command = new ListCommand(input);
-            shouldUpdateStorage = false;
-        } else if (inputLower.startsWith("mark")) {
-            command = new MarkCommand(input);
-        } else if (inputLower.startsWith("unmark")) {
-            command = new UnmarkCommand(input);
-        } else if (inputLower.startsWith("delete")) {
-            command = new DeleteCommand(input);
-        } else if (inputLower.startsWith("todo")) {
-            command = new ToDoCommand(input);
-        } else if (inputLower.startsWith("deadline")) {
-            command = new DeadlineCommand(input);
-        } else if (inputLower.startsWith("event")) {
-            command = new EventCommand(input);
-        } else if (inputLower.startsWith("find")) {
-            command = new FindCommand(input);
-            shouldUpdateStorage = false;
-        } else if (inputLower.startsWith("undo")) {
-            command = new UndoCommand(input);
-        } else if (inputLower.startsWith("bye")) {
-            command = new ByeCommand(input);
-            shouldExit = true;
-            shouldUpdateStorage = false;
-        } else {
+        Function<String, Command> factory = COMMAND_MAP.get(commandWord);
+        if (factory == null) {
             throw new ApolloException.UnknownCommandException();
         }
 
+        Command command = factory.apply(input);
         command.run(ui, taskList);
         CommandStack.push(command);
-        if (shouldUpdateStorage) {
-            safeSave();
-        }
-        return shouldExit;
-    }
 
-    /**
-     * Saves the current TaskList to storage, displaying an error message if saving fails.
-     */
-    private void safeSave() {
-        try {
-            Storage.save(taskList);
-        } catch (IOException e) {
-            ui.showMessage("Unable to save your tasks. Changes may be lost.");
-        }
+        // Program should exit if ByeCommand was executed
+        return command instanceof ByeCommand;
     }
 }

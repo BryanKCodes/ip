@@ -11,7 +11,7 @@ import apollo.ui.Ui;
 /**
  * Represents a command to create a new ToDo task.
  */
-public class ToDoCommand extends Command {
+public class ToDoCommand extends TaskCommand {
     private static final String PATTERN = "^todo\\s+(.+)$";
     private Matcher matcher;
 

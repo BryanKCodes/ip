@@ -20,6 +20,7 @@ public abstract class Command {
      * Constructs a command with a specific regex pattern to match user input.
      *
      * @param pattern The regex pattern for this command.
+     * @param input The raw user input string for this command.
      */
     protected Command(String pattern, String input) {
         this.pattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
@@ -61,7 +62,7 @@ public abstract class Command {
      * @param taskList The list of tasks to operate on.
      * @throws ApolloException If the input is invalid or execution fails.
      */
-    public final void run(Ui ui, TaskList taskList) throws ApolloException {
+    public void run(Ui ui, TaskList taskList) throws ApolloException {
         match(input);
         execute(ui, taskList);
     }

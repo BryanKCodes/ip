@@ -12,7 +12,7 @@ import apollo.ui.Ui;
 /**
  * Represents a command to create a new Deadline task.
  */
-public class DeadlineCommand extends Command {
+public class DeadlineCommand extends TaskCommand {
     private static final String PATTERN = "^deadline\\s+(.+)\\s+/by\\s+(.+)$";
     private Matcher matcher;
 
