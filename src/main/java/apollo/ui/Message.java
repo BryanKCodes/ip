@@ -18,9 +18,15 @@ import javafx.scene.shape.Circle;
  * The styling is controlled by an external CSS file (styles.css).
  */
 public class Message extends VBox {
+    private static final String USER_IMG_PATH = "/images/user.png";
+    private static final String APOLLO_IMG_PATH = "/images/apollo.png";
+    private static final Image USER_IMG = new Image(Message.class.getResourceAsStream(USER_IMG_PATH));
+    private static final Image APOLLO_IMG = new Image(Message.class.getResourceAsStream(APOLLO_IMG_PATH));
 
-    private final Image userImg = new Image(this.getClass().getResourceAsStream("/images/user.png"));
-    private final Image apolloImg = new Image(this.getClass().getResourceAsStream("/images/apollo.png"));
+    private static final double AVATAR_SIZE = 40.0;
+    private static final double VBOX_SPACING = 5.0;
+    private static final double HBOX_SPACING = 10.0;
+    private static final Insets MESSAGE_PADDING = new Insets(5, 10, 5, 10);
 
     /**
      * Constructs a Message UI component.
@@ -37,10 +43,10 @@ public class Message extends VBox {
         label.getStyleClass().add("message-bubble");
 
         // Create the avatar image
-        ImageView avatar = new ImageView(isUser ? userImg : apolloImg);
-        avatar.setFitWidth(40);
-        avatar.setFitHeight(40);
-        avatar.setClip(new Circle(20, 20, 20));
+        ImageView avatar = new ImageView(isUser ? USER_IMG : APOLLO_IMG);
+        avatar.setFitWidth(AVATAR_SIZE);
+        avatar.setFitHeight(AVATAR_SIZE);
+        avatar.setClip(new Circle(AVATAR_SIZE / 2, AVATAR_SIZE / 2, AVATAR_SIZE / 2));
 
         // Create the timestamp
         String time = LocalTime.now().format(DateTimeFormatter.ofPattern("h:mm a"));
@@ -48,10 +54,10 @@ public class Message extends VBox {
         timestampLabel.getStyleClass().add("timestamp-label");
 
         // HBox to hold the message bubble and avatar
-        HBox messageBody = new HBox(10);
+        HBox messageBody = new HBox(HBOX_SPACING);
 
         // VBox to hold the message bubble and timestamp
-        VBox messageContent = new VBox(2);
+        VBox messageContent = new VBox(VBOX_SPACING);
         messageContent.getChildren().addAll(label, timestampLabel);
 
         if (isUser) {
@@ -68,7 +74,7 @@ public class Message extends VBox {
             this.setAlignment(Pos.TOP_LEFT);
         }
 
-        this.setPadding(new Insets(5, 10, 5, 10));
+        this.setPadding(MESSAGE_PADDING);
         this.getChildren().add(messageBody);
     }
 }
