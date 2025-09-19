@@ -20,11 +20,16 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
- * Starts the Apollo chatbot application with an improved, CSS-styled UI.
+ * Starts the Apollo chatbot application.
  */
 public class Apollo extends Application {
+    private static final String APP_TITLE = "Apollo";
+    private static final double MIN_WIDTH = 350;
+    private static final double MIN_HEIGHT = 500;
+    private static final String PROMPT_TEXT = "Type a message...";
     private static final double SCENE_WIDTH = 400;
     private static final double SCENE_HEIGHT = 600;
+    private static final String SEND_ICON_PATH = "M2 21l21-9L2 3v7l15 2-15 2v7z";
 
     private Parser parser;
     private Ui ui;
@@ -59,13 +64,13 @@ public class Apollo extends Application {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Hide horizontal scrollbar
 
         userInput = new TextField();
-        userInput.setPromptText("Type a message...");
+        userInput.setPromptText(PROMPT_TEXT);
 
         sendButton = new Button();
 
         // Create an SVG icon for the send button
         SVGPath sendIcon = new SVGPath();
-        sendIcon.setContent("M2 21l21-9L2 3v7l15 2-15 2v7z");
+        sendIcon.setContent(SEND_ICON_PATH);
         sendIcon.setFill(Color.WHITE);
         sendIcon.setScaleX(0.7);
         sendIcon.setScaleY(0.7);
@@ -96,9 +101,9 @@ public class Apollo extends Application {
         scene.getStylesheets().add(cssPath);
 
         stage.setScene(scene);
-        stage.setTitle("Apollo");
-        stage.setMinWidth(350);
-        stage.setMinHeight(500);
+        stage.setTitle(APP_TITLE);
+        stage.setMinWidth(MIN_WIDTH);
+        stage.setMinHeight(MIN_HEIGHT);
     }
 
     /**
